@@ -24,6 +24,18 @@
 
 @implementation ItemsViewController
 
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    //Load the NIB file
+    UINib *nib = [UINib nibWithNibName:@"HomepwnerItemCell" bundle:nil];
+    
+    //Register this NIB which contains the cell
+    [[self tableView] registerNib:nib forCellReuseIdentifier:@"HomepwnerItemCell"];
+}
+
+
 -(IBAction)addNewItem:(id)sender
 {
     //Create a new BNRItem and add it to the store
@@ -73,20 +85,20 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //check for a reuable cell first, use that if it exists
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"UITableViewCell"];
+    BNRItem *p = [[[BNRItemStore sharedStore] allItems] objectAtIndex:[indexPath row]];
     
-    //If there is no reusable cell of this type, create a new one
-    if(!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UITableViewCell"];
-    }
+    //Get the new or recycled cell
+    HomepwnerItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HomepwnerItemCell"];
     
-    //Set the text on the cell with the description of th eitem that is at the nth index of items
-    //where n = row this cell will appear in on the the tableview
-    NSArray *items = [[BNRItemStore sharedStore] allItems];
-    BNRItem *p = [items objectAtIndex:[indexPath row]];
+    //Configure the cell with the BNRItem
+    [cell setController:self];
+    [cell setOwningTableView:tableView];
     
-    [[cell textLabel] setText:[p description]];
+    [[cell nameLabel] setText:[p itemName]];
+    [[cell serialNumberLabel] setText:[p serialNumber]];
+    [[cell valueLabel] setText:[NSString stringWithFormat:@"$%d", [p valueInDollars]]];
+    
+    [[cell thumbnailView] setImage:[p thumbnail]];
     
     return cell;
 }
@@ -128,6 +140,11 @@
 {
     [super viewWillAppear:animated];
     [[self tableView] reloadData];
+}
+
+-(void)showImage:(id)sender atIndexPath:(NSIndexPath *)ip
+{
+    NSLog(@"Going to show the image for %@", ip);
 }
 
 @end

@@ -9,6 +9,7 @@
 #import "DetailViewController.h"
 #import "BNRItem.h"
 #import "BNRImageStore.h"
+#import "AssetTypePicker.h"
 
 @interface DetailViewController ()
 {
@@ -20,6 +21,10 @@
 @property (weak, nonatomic) IBOutlet UITextField *valueField;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *cameraButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *assetTypeButton;
+- (IBAction)showAssetTypePicker:(id)sender;
+
 
 - (IBAction)takePicture:(id)sender;
 
@@ -42,7 +47,8 @@
     [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
     
     //Use filtered NSDate object to set dateLabel contents
-    [[self dateLabel] setText:[dateFormatter stringFromDate:[item dateCreated]]];
+    NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:[item dateCreated]];
+    [[self dateLabel] setText:[dateFormatter stringFromDate:date]];
     
     NSString *imageKey = [[self item] imageKey];
     
@@ -54,6 +60,13 @@
     } else {
         [[self imageView] setImage:nil];
     }
+    
+    NSString *typeLabel = [[[self item] assetType] valueForKey:@"label"];
+    if(!typeLabel) {
+        typeLabel = @"None";
+    }
+    
+    [[self assetTypeButton] setTitle:[NSString stringWithFormat:@"Type: %@", typeLabel]];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -75,6 +88,7 @@
     _item = item;
     [[self navigationItem] setTitle:[[self item] itemName]];
 }
+
 
 - (IBAction)takePicture:(id)sender {
     
@@ -127,14 +141,14 @@
     //Put that image onto the screen in our image view
     [[self imageView] setImage:image];
     
+    [[self item] setThumbnailDataFromImage:image];
+    
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         [self dismissViewControllerAnimated:YES completion:nil];
     } else {
         [_imagePickerPopover dismissPopoverAnimated:YES];
         _imagePickerPopover = nil;
     }
-    
-    
 }
 
 -(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
@@ -160,10 +174,34 @@
     [[self view] addConstraints:horizontalContraints];
     
     /*nameMap = @{@"imageView" : [self imageView],
-                @"dateLabel" : [self dateLabel],
-                @"toolbar" : [self toolbar]};*/
+     @"dateLabel" : [self dateLabel],
+     @"toolbar" : [self toolbar]};*/
+}
+
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+{
+    if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
+    {
+        if(UIInterfaceOrientationIsLandscape(interfaceOrientation))
+        {
+            [[self imageView] setHidden:YES];
+            [[self cameraButton] setEnabled:NO];
+        }
+        else {
+            [[self imageView] setHidden:NO];
+            [[self cameraButton] setEnabled:YES];
+        }
+    }
+}
+
+-(IBAction)showAssetTypePicker:(id)sender
+{
+    [[self view] endEditing:YES];
     
+    AssetTypePicker *assetTypePicker = [[AssetTypePicker alloc] init];
+    [assetTypePicker setItem:[self item]];
     
+    [[self navigationController] pushViewController:assetTypePicker animated:YES];
 }
 
 @end

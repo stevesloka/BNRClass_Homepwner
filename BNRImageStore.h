@@ -16,4 +16,5 @@
 -(UIImage *)imageForKey:(NSString *)s;
 -(void)deleteImageForKey:(NSString *)s;
 
+
 @end

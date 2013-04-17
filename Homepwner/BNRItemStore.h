@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+
+
 @class BNRItem;
 
 @interface BNRItemStore : NSObject
@@ -20,5 +22,9 @@
 
 -(void)moveItemAtIndex:(int)from
                toIndex:(int)to;
+
+-(BOOL)saveChanges;
+
+-(NSArray *)allAssetTypes;
 
 @end
