@@ -7,13 +7,13 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "HomepwnerItemCell.m"
-         timestampString = "387916738.685002"
+         filePath = "ItemsViewController.m"
+         timestampString = "387940214.451106"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "100"
-         endingLineNumber = "100"
-         landmarkName = "-showImage:"
+         startingLineNumber = "147"
+         endingLineNumber = "147"
+         landmarkName = "-showImage:atIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

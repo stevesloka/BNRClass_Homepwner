@@ -74,7 +74,7 @@
     
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    [button addTarget:self action:@selector(showImage) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(showImage:) forControlEvents:UIControlEventTouchUpInside];
     
     [[self contentView] addSubview:button];
     
@@ -95,8 +95,9 @@
     
 }
 
--(void)showImage:(id)sender
+- (void)showImage:(id)sender
 {
+    NSLog(@"button preseed");
     NSString *selector = NSStringFromSelector(_cmd);
     selector = [selector stringByAppendingString:@"atIndexPath"];
     
